@@ -12,7 +12,7 @@ import java.util.Date;
 /**
  * Super simple incomplete HTTP Server
  */
-public class TODO_HttpServer {
+public class HttpServer {
 
 	static final int PORT = 8080;
 
@@ -55,7 +55,7 @@ public class TODO_HttpServer {
 	 * @param in  - stream from client
 	 * @param out - stream to client
 	 */
-	private static void processHTTPrequest(InputStream in, OutputStream out) throws IOException {
+	private static void processHttpRequest(InputStream in, OutputStream out) throws IOException {
 
 		String request = "TODO";
 
@@ -93,7 +93,7 @@ public class TODO_HttpServer {
 				try (Socket clientS = ss.accept()) {
 					InputStream in = clientS.getInputStream();
 					OutputStream out = clientS.getOutputStream();
-					processHTTPrequest(in, out);
+					processHttpRequest(in, out);
 				} catch (IOException x) {
 					x.printStackTrace();
 				}
