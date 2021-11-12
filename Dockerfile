@@ -10,8 +10,8 @@ RUN apt-get install -y apache2 && \
 
 WORKDIR /test
 
-COPY bin .
+COPY out .
 
-ADD test.html index.html
+ADD index.html .
 ADD earth.jpg .
 

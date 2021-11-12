@@ -9,7 +9,7 @@ public class HttpClient {
 
 	private static final int HTTP_DEFAULT_PORT = 80;
 
-	private static final String DEFAULT_URL = "http://localhost:9999/index.html";
+	private static final String DEFAULT_URL = "http://localhost:8080/index.html";
 	
 	public static void main(String[] args) throws Exception {
 		

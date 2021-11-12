@@ -1,10 +1,7 @@
 
 package http;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Date;
@@ -14,10 +11,11 @@ import java.util.Date;
  */
 public class HttpServer {
 
-	static final int PORT = 8080;
+	private static final int PORT = 8080;
+	private static final int BUF_SIZE = 1024;
 
-	static final String GET = "GET";
-	static final String POST = "POST";
+	private static final String GET = "GET";
+	private static final String POST = "POST";
 
 	/**
 	 * Returns an input stream with an error message "Not Implemented"
@@ -38,11 +36,26 @@ public class HttpServer {
 	 * 
 	 */
 	static void getFile(String fileName, OutputStream out) throws IOException {
-		// TODO
+		try {
+			FileInputStream fis = new FileInputStream(fileName.substring(1));
+			out.write("HTTP/1.0 200 OK\r\n".getBytes());
+			out.write("Content-Type: image/jpg\r\n".getBytes());
+			out.write("\r\n".getBytes());
+			
+			int n;
+			byte[] buf = new byte[BUF_SIZE];
+			
+			while ((n = fis.read(buf)) > 0) {
+				out.write(buf, 0, n);
+			}
+		}
+		catch (FileNotFoundException e) {
+			out.write("HTTP/1.0 404 NOT FOUND".getBytes());
+		}
 	}
 
 	/**
-	 * postFile: receives the requested file resources from the client
+	 * Receives the requested file resources from the client
 	 * 
 	 */
 	static void postFile(String fileName, InputStream in, OutputStream out) throws IOException {
@@ -50,41 +63,37 @@ public class HttpServer {
 	}
 
 	/**
-	 * processHTTPrequest - handle one HTTP request
-	 * 
+	 * Handles one HTTP request
 	 * @param in  - stream from client
 	 * @param out - stream to client
 	 */
 	private static void processHttpRequest(InputStream in, OutputStream out) throws IOException {
-
-		String request = "TODO";
-
-		// TODO read request
+		StringBuffer request = new StringBuffer();
+		String buff;
+		
+		while (!(buff = new String(in.readNBytes(1))).equals("\n")) {
+			request.append(buff);
+		}
+		
+		request.deleteCharAt(request.length()-1);
 
 		System.out.println("received: " + request);
 
-		String[] requestParts = Http.parseHttpRequest(request);
-
-		// TODO consume request headers
-
+		String[] requestParts = Http.parseHttpRequest(request.toString());
+		
+		assert requestParts != null;
 		String method = requestParts[0].toUpperCase();
-
+		
 		switch (method) {
-		case GET:
-			getFile(requestParts[1], out);
-			break;
-		case POST:
-			postFile(requestParts[1], in, out);
-			break;
-		default:
-			Http.dumpStream(notImplementedPageStream(), out);
+			case GET -> getFile(requestParts[1], out);
+			case POST -> postFile(requestParts[1], in, out);
+			default -> Http.dumpStream(notImplementedPageStream(), out);
 		}
 	}
 
 	/**
-	 * MAIN - accept and handle client connections
+	 * Accepts and handles client connections
 	 */
-
 	public static void main(String[] args) {
 
 		try (ServerSocket ss = new ServerSocket(PORT)) {

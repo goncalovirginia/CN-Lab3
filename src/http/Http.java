@@ -54,10 +54,10 @@ public class Http {
 
 	public static String[] parseHttpRequest(String request) {
 		Matcher m = HTTP_REQUEST_REGEX.matcher(request);
-		if (m.matches())
-			return new String[] { m.group(1), m.group(2), m.group(3) };
-		else
-			return null;
+		if (m.matches()) {
+			return new String[]{m.group(1), m.group(2), m.group(3)};
+		}
+		return null;
 	}
 
 	/**
@@ -179,8 +179,8 @@ public class Http {
 		Assert( Result(Http::PrintArray, Http.parseHttpHeader(range1)) != null);
 		Assert( Result(Http::PrintArray, Http.parseHttpHeader(range2)) != null);
 
-//		Assert( Result(Http::PrintArray, Http.parseRangeValues(range1)) != null);
-//		Assert( Result(Http::PrintArray, Http.parseRangeValues(range2)) != null);
+		//Assert( Result(Http::PrintArray, Http.parseRangeValues(range1)) != null);
+		//Assert( Result(Http::PrintArray, Http.parseRangeValues(range2)) != null);
 
 		String query1 = "/resource?";
 		String query2 = "/resource?key1=val1&key2=val2";
@@ -192,7 +192,7 @@ public class Http {
 	}
 
 	static void Assert(boolean value) {
-		if (value != true)
+		if (!value)
 			throw new AssertionError();
 	}
 
